@@ -32,6 +32,8 @@ clock = time.Clock()
 game = True
 FPS = 60
 finish = False
+ball = transform.scale(image.load('resources/Мячь.png'),(55,55))
+pong = transform.scale(image.load('resources/Pong.png'),(20,80))
 
 while game:
     clock.tick(FPS)
