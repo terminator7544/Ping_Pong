@@ -29,6 +29,7 @@ class Player(GameSprite):
     def update(self):
         self.win.blit(self.image,(self.rect.x,self.rect.y))
 
+
 class Ball(GameSprite):
     def __init__(self,image, palyer_x, palyer_y, win):
         super().__init__(image, palyer_x, palyer_y, win)
