@@ -1,5 +1,7 @@
 from pygame import *
 
+font.init()
+
 class GameSprite(sprite.Sprite):
     def __init__(self, image, palyer_x, palyer_y, win):
         super().__init__()
@@ -30,18 +32,33 @@ class Player(GameSprite):
         self.win.blit(self.image,(self.rect.x,self.rect.y))
 
 class Ball(GameSprite):
-    def __init__(self,image, palyer_x, palyer_y, win):
+    def __init__(self,image, palyer_x, palyer_y, win, f):
         super().__init__(image, palyer_x, palyer_y, win)
         self.speed_x = 2
         self.speed_y = 2
+        self.f = f
+        self.score1 = 0
+        self.score2 = 0
     def move(self,racket1,racket2):
         if self.rect.colliderect(racket1) or self.rect.colliderect(racket2):
             self.speed_x *= -1
         if self.rect.y<0 or self.rect.y>480:
             self.speed_y*= -1
+        if self.rect.x<0:
+            self.rect.x = 350
+            self.rect.y = 250
+            self.score2 +=1
+        if self.rect.x>700:
+            self.rect.x = 350
+            self.rect.y = 250
+            self.score1 +=1
         self.rect.x += self.speed_x
         self.rect.y += self.speed_y
+        self.tx1 = self.f.render(str(self.score1),True,'white')
+        self.tx2 = self.f.render(str(self.score2),True,'white')
     def update(self):
+        self.win.blit(self.tx1,(200,25))
+        self.win.blit(self.tx2, (500,25))
         self.win.blit(self.image,(self.rect.x,self.rect.y))
 def update(background):
     win.blit(background,(0,0))
@@ -59,6 +76,8 @@ game = True
 FPS = 60
 finish = False
 
+f = font.SysFont('Arial',38)
+
 background = transform.scale(image.load('resources/Background.png'),(700,500))
 ball = transform.scale(image.load('resources/Мячь.png'),(20,20))
 pong = transform.scale(image.load('resources/Pong.png'),(20,80))
@@ -66,7 +85,8 @@ pong = transform.scale(image.load('resources/Pong.png'),(20,80))
 
 player_1 = Player(pong, 50, 200, win, 'left', 3)
 player_2 = Player(pong, 650, 200, win, 'right', 3)
-ball_1 = Ball(ball,350,250,win)
+ball_1 = Ball(ball,350,250,win,f)
+
 
 while game:
     clock.tick(FPS)
@@ -74,5 +94,6 @@ while game:
         if e.type == QUIT:
             game = False
             break
+
     update(background)
     display.update()
