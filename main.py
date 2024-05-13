@@ -22,26 +22,35 @@ class Player(GameSprite):
         self.speed = speed
     def move(self):
         keys = key.get_pressed()
-        if keys[self.keys[0]]:
+        if keys[self.keys[0]] and self.rect.y>0:
             self.rect.y = self.rect.y- self.speed
-        if keys[self.keys[1]]:
+        if keys[self.keys[1]] and self.rect.y<420:
             self.rect.y = self.rect.y+ self.speed
     def update(self):
         self.win.blit(self.image,(self.rect.x,self.rect.y))
 
-
 class Ball(GameSprite):
     def __init__(self,image, palyer_x, palyer_y, win):
         super().__init__(image, palyer_x, palyer_y, win)
-        self.speed_x = 1
-        self.speed_y = 1
-
+        self.speed_x = 2
+        self.speed_y = 2
+    def move(self,racket1,racket2):
+        if self.rect.colliderect(racket1) or self.rect.colliderect(racket2):
+            self.speed_x *= -1
+        if self.rect.y<0 or self.rect.y>480:
+            self.speed_y*= -1
+        self.rect.x += self.speed_x
+        self.rect.y += self.speed_y
+    def update(self):
+        self.win.blit(self.image,(self.rect.x,self.rect.y))
 def update(background):
     win.blit(background,(0,0))
     player_1.move()
     player_1.update()
     player_2.move()
     player_2.update()
+    ball_1.move(player_1,player_2)
+    ball_1.update()
 
 win = display.set_mode((700, 500))
 display.set_caption("Ping_Pong")
@@ -51,11 +60,13 @@ FPS = 60
 finish = False
 
 background = transform.scale(image.load('resources/Background.png'),(700,500))
-ball = transform.scale(image.load('resources/Мячь.png'),(55,55))
+ball = transform.scale(image.load('resources/Мячь.png'),(20,20))
 pong = transform.scale(image.load('resources/Pong.png'),(20,80))
+
 
 player_1 = Player(pong, 50, 200, win, 'left', 3)
 player_2 = Player(pong, 650, 200, win, 'right', 3)
+ball_1 = Ball(ball,350,250,win)
 
 while game:
     clock.tick(FPS)
