@@ -60,6 +60,20 @@ class Ball(GameSprite):
         self.win.blit(self.tx1,(200,25))
         self.win.blit(self.tx2, (500,25))
         self.win.blit(self.image,(self.rect.x,self.rect.y))
+
+class Button(GameSprite):
+    def __init__(self,image, palyer_x, palyer_y, win,summ):
+        super().__init__(image, palyer_x, palyer_y, win)
+        self.q = True
+        self.summ = summ
+    def update(self):
+        self.win.blit(self.image,(self.rect.x,self.rect.y))
+    def clicked(self):
+        if mouse.get_pressed()[0] and self.rect.collidepoint(mouse.get_pos()) and self.q:
+            print(True)
+            self.q =False
+        elif not mouse.get_pressed()[0]:
+            self.q =True
 def update(IsGame):
     if IsGame:
         player_1.move()
@@ -69,11 +83,11 @@ def update(IsGame):
         ball_1.move(player_1,player_2)
         ball_1.update()
     else:
-        pass
+        clickable()
+        button_up.update()
 
-def clickable:
-    # if pygame.mouse.get_pressed()[0] and mysprite.rect.collidepoint(pygame.mouse.get_pos())
-    pass
+def clickable():
+    button_up.clicked()
 
 win = display.set_mode((700, 500))
 display.set_caption("Ping_Pong")
@@ -88,12 +102,13 @@ background = transform.scale(image.load('resources/Background.png'),(700,500))
 ball = transform.scale(image.load('resources/Мячь.png'),(20,20))
 pong = transform.scale(image.load('resources/Pong.png'),(20,80))
 
+btn = transform.scale(image.load('resources/Мячь.png'),(100,100))
 
 player_1 = Player(pong, 50, 200, win, 'left', 3)
 player_2 = Player(pong, 650, 200, win, 'right', 3)
 ball_1 = Ball(ball,350,250,win,f)
 
-# button_up =
+button_up = Button(btn,450,150,win,1)
 
 while game:
     clock.tick(FPS)
